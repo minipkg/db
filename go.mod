@@ -13,7 +13,7 @@ require (
 	github.com/iancoleman/strcase v0.1.3 // indirect
 	github.com/jinzhu/gorm v1.9.16 // indirect
 	github.com/minipkg/log v0.0.0-20210401163336-53d77a21a670 // indirect
-	github.com/minipkg/selection_condition v0.0.1 // indirect
+	github.com/minipkg/selection_condition v0.0.2 // indirect
 	github.com/yuin/gopher-lua v0.0.0-20200816102855-ee81675732da // indirect
 	go.mongodb.org/mongo-driver v1.5.1 // indirect
 )

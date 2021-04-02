@@ -14,6 +14,10 @@ import (
 const DefaultLimit = 1000
 
 func Conditions(db *gorm.DB, conditions *selection_condition.SelectionCondition) *gorm.DB {
+	if conditions == nil {
+		return db
+	}
+
 	if err := conditions.Validate(); err != nil {
 		db.AddError(err)
 		return db

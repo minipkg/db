@@ -18,6 +18,9 @@ func New(conf minipkg_gorm.Config, logger log.ILogger) (*minipkg_gorm.DB, *sqlmo
 	var err error
 
 	dbm, mock, err = sqlmock.New() // mock sql.DB
+	if err != nil {
+		return nil, nil, err
+	}
 
 	db, err := gorm.Open(conf.Dialect, dbm)
 	if err != nil {

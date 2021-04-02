@@ -143,6 +143,8 @@ github.com/minipkg/selection_condition v0.0.0-20210401162605-7af6964eea10 h1:zD7
 github.com/minipkg/selection_condition v0.0.0-20210401162605-7af6964eea10/go.mod h1:Tb9I1xqD7rBBtMHcHKgN3mareh3VwVE4+lffzATo/jY=
 github.com/minipkg/selection_condition v0.0.1 h1:XycxS93rn5MQbOpTj1i4GPISQMsh5rMZ8/EijYI+8Ow=
 github.com/minipkg/selection_condition v0.0.1/go.mod h1:Tb9I1xqD7rBBtMHcHKgN3mareh3VwVE4+lffzATo/jY=
+github.com/minipkg/selection_condition v0.0.2 h1:sCLJMTJQy39A5z9I1YCuIZ3mdADizfAgOoQ2IoVA2Zc=
+github.com/minipkg/selection_condition v0.0.2/go.mod h1:Tb9I1xqD7rBBtMHcHKgN3mareh3VwVE4+lffzATo/jY=
 github.com/montanaflynn/stats v0.0.0-20171201202039-1bf9dbcd8cbe/go.mod h1:wL8QJuTMNUDYhXwkmfOly8iTdp5TEcJFWZD2D7SIkUc=
 github.com/nxadm/tail v1.4.4/go.mod h1:kenIhsEOeOJmVchQTgglprH7qJGnHDVpk1VPCcaMI8A=
 github.com/onsi/ginkgo v1.6.0/go.mod h1:lLunBs/Ym6LB5Z9jYTR76FiuTmxDTDusOGeTQH+WWjE=
