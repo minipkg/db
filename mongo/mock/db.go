@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/mock"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
-	mongodb "github.com/minipkg/go-app-common/db/mongo"
+	mongodb "github.com/minipkg/db/mongo"
 )
 
 type DB struct {
