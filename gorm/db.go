@@ -38,7 +38,7 @@ type Config struct {
 }
 
 // New creates a new DB connection
-func New(conf Config, logger log.ILogger) (*DB, error) {
+func New(logger log.ILogger, conf Config) (*DB, error) {
 	db, err := gorm.Open(conf.Dialect, conf.DSN)
 	if err != nil {
 		return nil, err
