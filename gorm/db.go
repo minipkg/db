@@ -1,8 +1,9 @@
 package gorm
 
 import (
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/postgres"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
+	gorm_logger "gorm.io/gorm/logger"
 
 	"github.com/minipkg/log"
 )
@@ -39,7 +40,16 @@ type Config struct {
 
 // New creates a new DB connection
 func New(logger log.ILogger, conf Config) (*DB, error) {
-	db, err := gorm.Open(conf.Dialect, conf.DSN)
+	newLogger := gorm_logger.New(logger, gorm_logger.Config{
+		SlowThreshold:             0,
+		Colorful:                  false,
+		IgnoreRecordNotFoundError: false,
+		LogLevel:                  0,
+	})
+
+	db, err := gorm.Open(postgres.Open(conf.DSN), &gorm.Config{
+		Logger: logger,
+	})
 	if err != nil {
 		return nil, err
 	}

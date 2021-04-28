@@ -4,8 +4,8 @@ import (
 	"database/sql"
 
 	"github.com/DATA-DOG/go-sqlmock"
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/postgres"
+	"gorm.io/gorm"
+	_ "gorm.io/gorm/dialects/postgres"
 
 	minipkg_gorm "github.com/minipkg/db/gorm"
 	"github.com/minipkg/log"

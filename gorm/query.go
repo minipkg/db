@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/iancoleman/strcase"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 	"github.com/pkg/errors"
 
 	"github.com/minipkg/selection_condition"
