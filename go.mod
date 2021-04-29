@@ -14,12 +14,16 @@ require (
 	github.com/jackc/pgproto3/v2 v2.0.7 // indirect
 	github.com/jackc/pgx/v4 v4.11.0 // indirect
 	github.com/jinzhu/gorm v1.9.16 // indirect
-	github.com/minipkg/log v0.0.0-20210401163336-53d77a21a670 // indirect
+	github.com/mattn/go-sqlite3 v1.14.7 // indirect
+	github.com/minipkg/log v0.0.1 // indirect
 	github.com/minipkg/selection_condition v0.0.2 // indirect
 	github.com/yuin/gopher-lua v0.0.0-20200816102855-ee81675732da // indirect
 	go.mongodb.org/mongo-driver v1.5.1 // indirect
+	go.uber.org/multierr v1.6.0 // indirect
 	golang.org/x/crypto v0.0.0-20210421170649-83a5a9bb288b // indirect
 	golang.org/x/text v0.3.6 // indirect
+	gorm.io/driver/mysql v1.0.6 // indirect
 	gorm.io/driver/postgres v1.0.8 // indirect
+	gorm.io/driver/sqlite v1.1.4 // indirect
 	gorm.io/gorm v1.21.9 // indirect
 )

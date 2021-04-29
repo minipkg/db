@@ -1,7 +1,11 @@
 package gorm
 
 import (
+	"time"
+
+	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
+	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	gorm_logger "gorm.io/gorm/logger"
 
@@ -34,29 +38,47 @@ var _ IDB = (*DB)(nil)
 type Config struct {
 	Dialect       string
 	DSN           string
-	IsLogMode     bool
 	IsAutoMigrate bool
+	Log           LogConfig
+}
+
+type LogConfig struct {
+	SlowThreshold             time.Duration
+	Colorful                  bool
+	IgnoreRecordNotFoundError bool
+	LogLevel                  int
 }
 
 // New creates a new DB connection
 func New(logger log.ILogger, conf Config) (*DB, error) {
+	var db *gorm.DB
+	var err error
+
 	newLogger := gorm_logger.New(logger, gorm_logger.Config{
-		SlowThreshold:             0,
-		Colorful:                  false,
-		IgnoreRecordNotFoundError: false,
-		LogLevel:                  0,
+		SlowThreshold:             conf.Log.SlowThreshold,
+		Colorful:                  conf.Log.Colorful,
+		IgnoreRecordNotFoundError: conf.Log.IgnoreRecordNotFoundError,
+		LogLevel:                  gorm_logger.LogLevel(conf.Log.LogLevel),
 	})
 
-	db, err := gorm.Open(postgres.Open(conf.DSN), &gorm.Config{
-		Logger: logger,
-	})
+	switch conf.Dialect {
+	case "postgres":
+		db, err = gorm.Open(postgres.Open(conf.DSN), &gorm.Config{
+			Logger: newLogger,
+		})
+	case "mysql":
+		db, err = gorm.Open(mysql.Open(conf.DSN), &gorm.Config{
+			Logger: newLogger,
+		})
+	case "sqlite":
+		db, err = gorm.Open(sqlite.Open(conf.DSN), &gorm.Config{
+			Logger: newLogger,
+		})
+	}
 	if err != nil {
 		return nil, err
 	}
-	db.SetLogger(logger)
-	// Enable Logger, show detailed log
-	db.LogMode(conf.IsLogMode)
-	// Enable auto preload embeded entities
+
 	db = db.Set("gorm:auto_preload", true)
 
 	dbobj := &DB{
