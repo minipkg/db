@@ -5,8 +5,8 @@ import (
 	"strings"
 
 	"github.com/iancoleman/strcase"
-	"gorm.io/gorm"
 	"github.com/pkg/errors"
+	"gorm.io/gorm"
 
 	"github.com/minipkg/selection_condition"
 )
@@ -40,7 +40,7 @@ func SortOrder(db *gorm.DB, orders []map[string]string) *gorm.DB {
 		s := strings.Builder{}
 
 		for k, v := range order {
-			field, ok := db.NewScope(db.Value).FieldByName(k)
+			field, ok := db.Statement.Schema.FieldsByName[k]
 			if !ok {
 				db.AddError(errors.Errorf("Can not find a field %q", k))
 				return db
@@ -63,14 +63,14 @@ func Offset(db *gorm.DB, value uint) *gorm.DB {
 	if value == 0 {
 		return db
 	}
-	return db.Offset(value)
+	return db.Offset(int(value))
 }
 
 func Limit(db *gorm.DB, value uint) *gorm.DB {
 	if value == 0 {
 		return db.Limit(DefaultLimit)
 	}
-	return db.Limit(value)
+	return db.Limit(int(value))
 }
 
 func Where(db *gorm.DB, conditions interface{}) *gorm.DB {
@@ -125,12 +125,12 @@ func WhereCondition(db *gorm.DB, condition selection_condition.WhereCondition) *
 		return db
 	}
 
-	if db.Value == nil {
+	if db.Statement.Model == nil {
 		db.AddError(errors.Errorf("Model must be specified"))
 		return db
 	}
 
-	field, ok := db.NewScope(db.Value).FieldByName(condition.Field)
+	field, ok := db.Statement.Schema.FieldsByName[condition.Field]
 	if !ok {
 		db.AddError(errors.Errorf("Can not find a field %q", condition.Field))
 		return db
