@@ -28,6 +28,14 @@ func (db *DB) DB() *gorm.DB {
 	return db.D
 }
 
+func (db *DB) Stop() error {
+	sqlDB, err := db.D.DB()
+	if err != nil {
+		return err
+	}
+	return sqlDB.Close()
+}
+
 func (db *DB) IsAutoMigrate() bool {
 	return db.isAutoMigrate
 }
