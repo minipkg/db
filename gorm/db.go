@@ -28,7 +28,7 @@ func (db *DB) DB() *gorm.DB {
 	return db.D
 }
 
-func (db *DB) Stop() error {
+func (db *DB) Close() error {
 	sqlDB, err := db.D.DB()
 	if err != nil {
 		return err
