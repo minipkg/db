@@ -15,6 +15,7 @@ import (
 // IDB is the interface for a DB connection
 type IDB interface {
 	DB() *gorm.DB
+	Close() error
 	IsAutoMigrate() bool
 }
 
