@@ -1,7 +1,10 @@
 package gorm
 
 import (
+	"context"
 	"time"
+
+	"github.com/pkg/errors"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
@@ -17,20 +20,41 @@ type IDB interface {
 	DB() *gorm.DB
 	Close() error
 	IsAutoMigrate() bool
+	Model(value interface{}) (*DB, error)
+	WithContext(ctx context.Context) *DB
 }
 
 // DB is the struct for a DB connection
 type DB struct {
-	D             *gorm.DB
+	GormDB        *gorm.DB
 	isAutoMigrate bool
 }
 
 func (db *DB) DB() *gorm.DB {
-	return db.D
+	return db.GormDB
+}
+
+func (db *DB) Model(value interface{}) (*DB, error) {
+	gormDB := db.GormDB.Model(value)
+
+	if err := statementParse(gormDB); err != nil {
+		return nil, err
+	}
+	return &DB{
+		GormDB:        gormDB,
+		isAutoMigrate: db.isAutoMigrate,
+	}, nil
+}
+
+func (db *DB) WithContext(ctx context.Context) *DB {
+	return &DB{
+		GormDB:        db.GormDB.WithContext(ctx),
+		isAutoMigrate: db.isAutoMigrate,
+	}
 }
 
 func (db *DB) Close() error {
-	sqlDB, err := db.D.DB()
+	sqlDB, err := db.GormDB.DB()
 	if err != nil {
 		return err
 	}
@@ -88,12 +112,22 @@ func New(logger log.ILogger, conf Config) (*DB, error) {
 		return nil, err
 	}
 
-	db = db.Set("gorm:auto_preload", true)
-
 	dbobj := &DB{
-		D:             db,
+		GormDB:        db,
 		isAutoMigrate: conf.IsAutoMigrate,
 	}
 
 	return dbobj, nil
+}
+
+func statementParse(db *gorm.DB) error {
+	if db.Statement.Schema == nil {
+
+		if db.Statement.Model == nil {
+			return errors.Errorf("Model must be specified")
+		}
+
+		return db.Statement.Parse(db.Statement.Model)
+	}
+	return nil
 }

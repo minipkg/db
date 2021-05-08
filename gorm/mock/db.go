@@ -51,10 +51,8 @@ func New(logger log.ILogger, conf minipkg_gorm.Config) (*minipkg_gorm.DB, *sqlmo
 	if err != nil {
 		return nil, nil, err
 	}
-	// Enable auto preload embeded entities
-	db = db.Set("gorm:auto_preload", true)
 
-	dbobj := &minipkg_gorm.DB{D: db}
+	dbobj := &minipkg_gorm.DB{GormDB: db}
 
 	return dbobj, &mock, nil
 }

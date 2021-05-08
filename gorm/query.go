@@ -36,6 +36,11 @@ func SortOrder(db *gorm.DB, orders []map[string]string) *gorm.DB {
 		return db
 	}
 
+	if err := statementParse(db); err != nil {
+		db.AddError(err)
+		return db
+	}
+
 	for _, order := range orders {
 		s := strings.Builder{}
 
@@ -125,8 +130,8 @@ func WhereCondition(db *gorm.DB, condition selection_condition.WhereCondition) *
 		return db
 	}
 
-	if db.Statement.Model == nil {
-		db.AddError(errors.Errorf("Model must be specified"))
+	if err := statementParse(db); err != nil {
+		db.AddError(err)
 		return db
 	}
 
