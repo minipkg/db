@@ -16,7 +16,7 @@ require (
 	github.com/jinzhu/gorm v1.9.16 // indirect
 	github.com/mattn/go-sqlite3 v1.14.7 // indirect
 	github.com/minipkg/log v0.0.1
-	github.com/minipkg/selection_condition v0.0.2
+	github.com/minipkg/selection_condition v0.0.3
 	github.com/pkg/errors v0.9.1
 	github.com/yuin/gopher-lua v0.0.0-20200816102855-ee81675732da // indirect
 	go.mongodb.org/mongo-driver v1.5.1 // indirect
