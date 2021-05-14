@@ -22,6 +22,7 @@ type IDB interface {
 	IsAutoMigrate() bool
 	Model(value interface{}) (*DB, error)
 	WithContext(ctx context.Context) *DB
+	ModelWithContext(ctx context.Context, model interface{}) (*DB, error)
 }
 
 // DB is the struct for a DB connection
@@ -51,6 +52,14 @@ func (db *DB) WithContext(ctx context.Context) *DB {
 		GormDB:        db.GormDB.WithContext(ctx),
 		isAutoMigrate: db.isAutoMigrate,
 	}
+}
+
+func (db *DB) ModelWithContext(ctx context.Context, model interface{}) (*DB, error) {
+	d, err := db.Model(model)
+	if err != nil {
+		return nil, err
+	}
+	return d.WithContext(ctx), nil
 }
 
 func (db *DB) Close() error {
