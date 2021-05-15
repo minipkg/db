@@ -4,8 +4,6 @@ import (
 	"context"
 	"time"
 
-	"github.com/pkg/errors"
-
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
@@ -23,6 +21,8 @@ type IDB interface {
 	Model(value interface{}) (*DB, error)
 	WithContext(ctx context.Context) *DB
 	ModelWithContext(ctx context.Context, model interface{}) (*DB, error)
+	SchemeInit(model interface{}) (*DB, error)
+	SchemeInitWithContext(ctx context.Context, model interface{}) (*DB, error)
 }
 
 // DB is the struct for a DB connection
@@ -38,13 +38,17 @@ func (db *DB) DB() *gorm.DB {
 func (db *DB) Model(value interface{}) (*DB, error) {
 	gormDB := db.GormDB.Model(value)
 
-	if err := statementParse(gormDB); err != nil {
+	if err := db.statementParse(value); err != nil {
 		return nil, err
 	}
 	return &DB{
 		GormDB:        gormDB,
 		isAutoMigrate: db.isAutoMigrate,
 	}, nil
+}
+
+func (db *DB) SchemeInit(model interface{}) (*DB, error) {
+	return db, db.statementParse(model)
 }
 
 func (db *DB) WithContext(ctx context.Context) *DB {
@@ -60,6 +64,10 @@ func (db *DB) ModelWithContext(ctx context.Context, model interface{}) (*DB, err
 		return nil, err
 	}
 	return d.WithContext(ctx), nil
+}
+
+func (db *DB) SchemeInitWithContext(ctx context.Context, model interface{}) (*DB, error) {
+	return db.WithContext(ctx).SchemeInit(model)
 }
 
 func (db *DB) Close() error {
@@ -129,14 +137,6 @@ func New(logger log.ILogger, conf Config) (*DB, error) {
 	return dbobj, nil
 }
 
-func statementParse(db *gorm.DB) error {
-	if db.Statement.Schema == nil {
-
-		if db.Statement.Model == nil {
-			return errors.Errorf("Model must be specified")
-		}
-
-		return db.Statement.Parse(db.Statement.Model)
-	}
-	return nil
+func (db *DB) statementParse(model interface{}) error {
+	return db.GormDB.Statement.Parse(model)
 }

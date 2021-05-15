@@ -36,8 +36,8 @@ func SortOrder(db *gorm.DB, orders []map[string]string) *gorm.DB {
 		return db
 	}
 
-	if err := statementParse(db); err != nil {
-		db.AddError(err)
+	if db.Statement.Schema == nil {
+		db.AddError(errors.New("Schema is nil"))
 		return db
 	}
 
@@ -130,8 +130,8 @@ func WhereCondition(db *gorm.DB, condition selection_condition.WhereCondition) *
 		return db
 	}
 
-	if err := statementParse(db); err != nil {
-		db.AddError(err)
+	if db.Statement.Schema == nil {
+		db.AddError(errors.New("Schema is nil"))
 		return db
 	}
 
