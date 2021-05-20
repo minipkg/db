@@ -48,7 +48,9 @@ func (db *DB) Model(value interface{}) (*DB, error) {
 }
 
 func (db *DB) SchemeInit(model interface{}) (*DB, error) {
-	return db, db.statementParse(model)
+	err := db.statementParse(model)
+	db.GormDB.Statement.Table = ""
+	return db, err
 }
 
 func (db *DB) WithContext(ctx context.Context) *DB {
