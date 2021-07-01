@@ -145,7 +145,7 @@ func WhereCondition(db *gorm.DB, condition selection_condition.WhereCondition) *
 		db.AddError(errors.Errorf("DBName in model must be specified"))
 		return db
 	}
-	tableField := field.DBName
+	tableField := field.Schema.Table + "." + field.DBName
 
 	switch condition.Condition {
 	case selection_condition.ConditionEq:
