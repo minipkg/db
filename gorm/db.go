@@ -23,6 +23,7 @@ type IDB interface {
 	ModelWithContext(ctx context.Context, model interface{}) (*DB, error)
 	SchemeInit(model interface{}) (*DB, error)
 	SchemeInitWithContext(ctx context.Context, model interface{}) (*DB, error)
+	GormTx(gormDB *gorm.DB) *gorm.DB
 }
 
 // DB is the struct for a DB connection
@@ -141,4 +142,9 @@ func New(logger log.ILogger, conf Config) (*DB, error) {
 
 func (db *DB) statementParse(model interface{}) error {
 	return db.GormDB.Statement.Parse(model)
+}
+
+func (db *DB) GormTx(gormDB *gorm.DB) *gorm.DB {
+	gormDB.Statement.Schema = db.DB().Statement.Schema
+	return gormDB
 }
