@@ -1,15 +1,14 @@
-package mock
+package redis
 
 import (
 	"github.com/alicebob/miniredis"
 	"github.com/elliotchance/redismock/v8"
+	gocache "github.com/go-redis/cache/v8"
 	"github.com/go-redis/redis/v8"
-
-	redisdb "github.com/minipkg/db/redis"
 )
 
-// New creates a new mock client
-func New() (*redisdb.DB, *redismock.ClientMock, error) {
+// New creates a new mock client.
+func NewMock() (*DB, *redismock.ClientMock, error) {
 	mr, err := miniredis.Run()
 	if err != nil {
 		return nil, nil, err
@@ -20,6 +19,11 @@ func New() (*redisdb.DB, *redismock.ClientMock, error) {
 	})
 
 	mock := redismock.NewNiceMock(client)
-	dbobj := &redisdb.DB{Exec: mock}
+	dbobj := &DB{
+		Exec: mock,
+		cache: gocache.New(&gocache.Options{
+			Redis: mock,
+		}),
+	}
 	return dbobj, mock, nil
 }
