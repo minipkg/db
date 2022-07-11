@@ -2,7 +2,6 @@ package redis
 
 import (
 	"context"
-	"time"
 
 	gocache "github.com/go-redis/cache/v8"
 	"github.com/go-redis/redis/v8"
@@ -13,8 +12,10 @@ import (
 type IDB interface {
 	DB() redis.Cmdable
 	Close() error
+	CacheSet(cacheItem *cache.Item) error
 	CacheOnce(cacheItem *cache.Item) error
-	Cache(ctx context.Context, key string, value interface{}, funcToGetData func(*cache.Item) (interface{}, error), ttl time.Duration) error
+	CacheGet(ctx context.Context, key string, value interface{}) error
+	CacheStats() *cache.Stats
 }
 
 type DB struct {
@@ -24,7 +25,6 @@ type DB struct {
 }
 
 var _ IDB = (*DB)(nil)
-var _ cache.DB = (*DB)(nil)
 
 type Config struct {
 	Addrs    []string
@@ -58,13 +58,26 @@ func New(conf Config) (*DB, error) {
 	return dbobj, nil
 }
 
+// Close closes a client
+func (d *DB) Close() error {
+
+	if d.client != nil {
+		if err := d.client.Close(); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// DB returns an object for execution commands
 func (d *DB) DB() redis.Cmdable {
 	return d.Exec
 }
 
-//CacheOnce makes a cache
-//Example:
-//	CacheOnce(&gocache.Item{
+// CacheOnceItem makes a cache
+// Once gets the item.Object for the given item.Key from the cache or executes, caches, and returns the results of the given item.Func, making sure that only one execution is in-flight for a given item.Key at a time. If a duplicate comes in, the duplicate caller waits for the original to complete and receives the same results.
+// Example:
+//	CacheOnceItem(&cache.Item{
 //		Key:   "mykey",
 //		Value: obj, // destination
 //		Do: func(*cache.Item) (interface{}, error) {
@@ -75,47 +88,40 @@ func (d *DB) DB() redis.Cmdable {
 //		},
 //	})
 func (d *DB) CacheOnce(cacheItem *cache.Item) error {
-	item := d.item2cacheItem(cacheItem)
-
-	return d.cache.Once(item)
+	return d.cache.Once(cache.Item2CacheItem(cacheItem))
 }
 
-func (d *DB) Cache(ctx context.Context, key string, value interface{}, funcToGetData func(*cache.Item) (interface{}, error), ttl time.Duration) error {
-	item := d.item2cacheItem(&cache.Item{
-		Ctx:            ctx,
-		Key:            key,
-		Value:          value,
-		TTL:            ttl,
-		Do:             funcToGetData,
-		SetXX:          false,
-		SetNX:          false,
-		SkipLocalCache: true,
-	})
-	return d.cache.Once(item)
+// CacheSet sets a cache
+// Example:
+//    ctx := context.Background()
+//    key := "mykey"
+//    obj := &Object{
+//        Str: "mystring",
+//        Num: 42,
+//    }
+//
+//    if err := mycache.Set(&cache.Item{
+//        Ctx:   ctx,
+//        Key:   key,
+//        Value: obj,
+//        TTL:   time.Hour,
+//    }); err != nil {
+//        panic(err)
+//    }
+func (d *DB) CacheSet(cacheItem *cache.Item) error {
+	return d.cache.Set(cache.Item2CacheItem(cacheItem))
 }
 
-func (d *DB) item2cacheItem(item *cache.Item) *gocache.Item {
-	i := &gocache.Item{
-		Ctx:            item.Ctx,
-		Key:            item.Key,
-		Value:          item.Value,
-		TTL:            item.TTL,
-		SetXX:          item.SetXX,
-		SetNX:          item.SetNX,
-		SkipLocalCache: item.SkipLocalCache,
-	}
-	i.Do = func(i *gocache.Item) (interface{}, error) {
-		return item.Do(item)
-	}
-	return i
+// CacheGet gets a cached value
+// Example:
+//    var wanted Object
+//    if err := mycache.Get(ctx, key, &wanted); err == nil {
+//        fmt.Println(wanted)
+//    }
+func (d *DB) CacheGet(ctx context.Context, key string, value interface{}) error {
+	return d.cache.Get(ctx, key, value)
 }
 
-func (d *DB) Close() error {
-
-	if d.client != nil {
-		if err := d.client.Close(); err != nil {
-			return err
-		}
-	}
-	return nil
+func (d *DB) CacheStats() *cache.Stats {
+	return cache.CacheStats2Stats(d.cache.Stats())
 }
