@@ -30,16 +30,16 @@ type Config struct {
 	Addrs    []string
 	Login    string
 	Password string
-	DBName   int
+	DBNum    int
 }
 
 // New creates a new DB connection
-func New(conf Config) (*DB, error) {
+func New(conf Config, CacheLifeTimeInHours uint) (*DB, error) {
 	client := redis.NewUniversalClient(&redis.UniversalOptions{
 		Addrs:    conf.Addrs,
 		Username: conf.Login,
 		Password: conf.Password,
-		DB:       conf.DBName,
+		DB:       conf.DBNum,
 	})
 	// @todo: try before timeout
 	err := client.Ping(context.TODO()).Err()
