@@ -34,7 +34,7 @@ type Config struct {
 }
 
 // New creates a new DB connection
-func New(conf Config, CacheLifeTimeInHours uint) (*DB, error) {
+func New(conf Config) (*DB, error) {
 	client := redis.NewUniversalClient(&redis.UniversalOptions{
 		Addrs:    conf.Addrs,
 		Username: conf.Login,
