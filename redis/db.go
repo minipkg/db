@@ -3,10 +3,9 @@ package redis
 import (
 	"context"
 
-	gocache "github.com/go-redis/cache/v8"
-	"github.com/go-redis/redis/v8"
-
+	gocache "github.com/go-redis/cache/v9"
 	"github.com/minipkg/db/redis/cache"
+	"github.com/redis/go-redis/v9"
 )
 
 type IDB interface {
