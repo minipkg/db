@@ -73,6 +73,10 @@ func (d *DB) DB() redis.Cmdable {
 	return d.Exec
 }
 
+func (d *DB) Client() redis.UniversalClient {
+	return d.client
+}
+
 // CacheOnceItem makes a cache
 // Once gets the item.Object for the given item.Key from the cache or executes, caches, and returns the results of the given item.Func, making sure that only one execution is in-flight for a given item.Key at a time. If a duplicate comes in, the duplicate caller waits for the original to complete and receives the same results.
 // Example:
