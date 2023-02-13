@@ -10,6 +10,7 @@ import (
 
 type IDB interface {
 	DB() redis.Cmdable
+	Client() redis.UniversalClient
 	Close() error
 	CacheSet(cacheItem *cache.Item) error
 	CacheOnce(cacheItem *cache.Item) error
