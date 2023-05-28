@@ -103,7 +103,7 @@ type LogConfig struct {
 }
 
 // New creates a new DB connection
-func New(logger log.ILogger, conf Config) (*DB, error) {
+func New(logger log.Logger, conf Config) (*DB, error) {
 	var db *gorm.DB
 	var err error
 

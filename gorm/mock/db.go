@@ -16,13 +16,13 @@ import (
 )
 
 // New creates a new DB connection
-func New(logger log.ILogger, conf minipkg_gorm.Config) (*minipkg_gorm.DB, *sqlmock.Sqlmock, error) {
+func New(logger log.Logger, conf minipkg_gorm.Config) (*minipkg_gorm.DB, *sqlmock.Sqlmock, error) {
 	var db *gorm.DB
 	var err error
 	var mock sqlmock.Sqlmock
 	var dbm *sql.DB
 
-	newLogger := gorm_logger.New(logger, gorm_logger.Config{
+	newLogger := gorm_logger.New(logger.(gorm_logger.Writer), gorm_logger.Config{
 		SlowThreshold:             conf.Log.SlowThreshold,
 		Colorful:                  conf.Log.Colorful,
 		IgnoreRecordNotFoundError: conf.Log.IgnoreRecordNotFoundError,
