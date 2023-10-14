@@ -3,8 +3,8 @@ package redis
 import (
 	//"github.com/alicebob/miniredis"
 	"github.com/elliotchance/redismock/v8"
-	//gocache "github.com/go-redis/cache/v8"
-	//"github.com/go-redis/redis/v8"
+	//gocache "github.com/go-redis/cache/v9"
+	//"github.com/go-redis/redis/v9"
 	"github.com/pkg/errors"
 )
 
