@@ -4,7 +4,6 @@ go 1.14
 
 require (
 	github.com/DATA-DOG/go-sqlmock v1.5.0
-	github.com/elliotchance/redismock/v8 v8.6.2
 	github.com/go-redis/cache/v9 v9.0.0
 	github.com/go-sql-driver/mysql v1.7.1 // indirect
 	github.com/iancoleman/strcase v0.1.3
